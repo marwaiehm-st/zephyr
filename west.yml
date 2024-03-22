@@ -23,6 +23,8 @@ manifest:
       url-base: https://github.com/zephyrproject-rtos
     - name: babblesim
       url-base: https://github.com/BabbleSim
+    - name: stm32-osf
+      url-base: https://github.com/STM32-OSF
 
   group-filter: [-babblesim, -optional]
 
@@ -234,7 +236,8 @@ manifest:
       groups:
         - hal
     - name: hal_stm32
-      revision: f1317150eac951fdd8259337a47cbbc4c2e6d335
+      revision: refs/heads/stm32n6_cube_0_4_1_zephyr_3_7_0
+      remote: stm32-osf
       path: modules/hal/stm32
       groups:
         - hal
