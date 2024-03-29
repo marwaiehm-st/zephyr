@@ -366,6 +366,86 @@
 			status = "disabled";
 		};
 
+		usart2: serial@40004400 {
+			compatible = "st,stm32-usart", "st,stm32-uart";
+			reg = <0x40004400 0x400>;
+			clocks = <&rcc STM32_CLOCK_BUS_APB1 0x00020000>;
+			resets = <&rctl STM32_RESET(APB1L, 17U)>;
+			interrupts = <160 0>;
+			status = "disabled";
+		};
+
+		usart3: serial@40004800 {
+			compatible = "st,stm32-usart", "st,stm32-uart";
+			reg = <0x40004800 0x400>;
+			clocks = <&rcc STM32_CLOCK_BUS_APB1 0x00040000>;
+			resets = <&rctl STM32_RESET(APB1L, 18U)>;
+			interrupts = <161 0>;
+			status = "disabled";
+		};
+
+		uart4: serial@40004c00 {
+			compatible = "st,stm32-usart", "st,stm32-uart";
+			reg = <0x40004C00 0x400>;
+			clocks = <&rcc STM32_CLOCK_BUS_APB1 0x00080000>;
+			resets = <&rctl STM32_RESET(APB1L, 19U)>;
+			interrupts = <162 0>;
+			status = "disabled";
+		};
+
+		uart5: serial@40005000 {
+			compatible = "st,stm32-usart", "st,stm32-uart";
+			reg = <0x40005000 0x400>;
+			clocks = <&rcc STM32_CLOCK_BUS_APB1 0x00100000>;
+			resets = <&rctl STM32_RESET(APB1L, 20U)>;
+			interrupts = <163 0>;
+			status = "disabled";
+		};
+
+		usart6: serial@42001400 {
+			compatible = "st,stm32-usart", "st,stm32-uart";
+			reg = <0x42001400 0x400>;
+			clocks = <&rcc STM32_CLOCK_BUS_APB2 0x00000020>;
+			resets = <&rctl STM32_RESET(APB2, 5U)>;
+			interrupts = <164 0>;
+			status = "disabled";
+		};
+
+		uart7: serial@40007800 {
+			compatible = "st,stm32-usart", "st,stm32-uart";
+			reg = <0x40007800 0x400>;
+			clocks = <&rcc STM32_CLOCK_BUS_APB1 0x40000000>;
+			resets = <&rctl STM32_RESET(APB1L, 30U)>;
+			interrupts = <165 0>;
+			status = "disabled";
+		};
+
+		uart8: serial@40007c00 {
+			compatible = "st,stm32-usart", "st,stm32-uart";
+			reg = <0x40007C00 0x400>;
+			clocks = <&rcc STM32_CLOCK_BUS_APB1 0x80000000>;
+			resets = <&rctl STM32_RESET(APB1L, 31U)>;
+			interrupts = <166 0>;
+			status = "disabled";
+		};
+
+		uart9: serial@42001800 {
+			compatible = "st,stm32-usart", "st,stm32-uart";
+			reg = <0x42001800 0x400>;
+			clocks = <&rcc STM32_CLOCK_BUS_APB2 0x00000040>;
+			resets = <&rctl STM32_RESET(APB2, 6U)>;
+			interrupts = <167 0>;
+			status = "disabled";
+		};
+
+		usart10: serial@42001c00 {
+			compatible = "st,stm32-usart", "st,stm32-uart";
+			reg = <0x42001C00 0x400>;
+			clocks = <&rcc STM32_CLOCK_BUS_APB2 0x00000080>;
+			resets = <&rctl STM32_RESET(APB2, 7U)>;
+			interrupts = <168 0>;
+			status = "disabled";
+		};
 	};
 };
 
