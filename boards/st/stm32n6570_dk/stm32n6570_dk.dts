@@ -20,6 +20,7 @@
 		zephyr,console = &usart1;
 		zephyr,shell-uart = &usart1;
 		zephyr,sram = &axisram1;
+		zephyr,canbus = &fdcan1;
 	};
 
 	aliases {
@@ -113,5 +114,15 @@
 		 <&rcc STM32_SRC_CKPER SPI5_SEL(1)>;
 	pinctrl-0 = <&spi5_nss_pa3 &spi5_sck_pe15 &spi5_miso_ph8 &spi5_mosi_pg2>;
 	pinctrl-names = "default";
+	status = "okay";
+};
+
+&fdcan1 {
+	clocks = <&rcc STM32_CLOCK_BUS_APB1_2 0x00000100>,
+		 <&rcc STM32_SRC_CKPER FDCAN_SEL(1)>;
+	pinctrl-0 = <&fdcan1_rx_pd0 &fdcan1_tx_pd1>;
+	pinctrl-names = "default";
+	bus-speed = <125000>;
+	bus-speed-data = <1000000>;
 	status = "okay";
 };
