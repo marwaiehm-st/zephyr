@@ -9,6 +9,7 @@
 #include <zephyr/dt-bindings/reset/stm32n6_reset.h>
 #include <zephyr/dt-bindings/memory-controller/stm32-fmc-nor-psram.h>
 #include <zephyr/dt-bindings/gpio/gpio.h>
+#include <zephyr/dt-bindings/i2c/i2c.h>
 #include <freq.h>
 
 / {
@@ -552,6 +553,45 @@
 			clocks = <&rcc STM32_CLOCK_BUS_APB4 0x00000080>;
 			interrupts = <106 0>, <107 0>;
 			interrupt-names = "event", "error";
+			status = "disabled";
+		};
+
+		fdcan1: can@4000a000 {
+			compatible = "st,stm32h7-fdcan";
+			reg = <0x4000A000 0x400>, <0x4000C000 0x2800>;
+			reg-names = "m_can", "message_ram";
+			interrupts = <180 0>, <181 0>, <186 0>;
+			interrupt-names = "int0", "int1", "calib";
+			clocks = <&rcc STM32_CLOCK_BUS_APB1_2 0x00000100>;
+			bosch,mram-cfg = <0x0 28 8 3 3 0 3 3>;
+			sample-point = <875>;
+			sample-point-data = <875>;
+			status = "disabled";
+		};
+
+		fdcan2: can@4000a400 {
+			compatible = "st,stm32h7-fdcan";
+			reg = <0x4000A400 0x400>, <0x4000C000 0x2800>;
+			reg-names = "m_can", "message_ram";
+			interrupts = <182 0>, <183 0>;
+			interrupt-names = "int0", "int1";
+			clocks = <&rcc STM32_CLOCK_BUS_APB1_2 0x00000100>;
+			bosch,mram-cfg = <0x0 28 8 3 3 0 3 3>;
+			sample-point = <875>;
+			sample-point-data = <875>;
+			status = "disabled";
+		};
+
+		fdcan3: can@4000e800 {
+			compatible = "st,stm32h7-fdcan";
+			reg = <0x4000E800 0x400>, <0x4000C000 0x2800>;
+			reg-names = "m_can", "message_ram";
+			interrupts = <184 0>, <185 0>;
+			interrupt-names = "int0", "int1";
+			clocks = <&rcc STM32_CLOCK_BUS_APB1_2 0x00000100>;
+			bosch,mram-cfg = <0x0 28 8 3 3 0 3 3>;
+			sample-point = <875>;
+			sample-point-data = <875>;
 			status = "disabled";
 		};
 	};
