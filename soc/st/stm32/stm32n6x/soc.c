@@ -48,6 +48,9 @@ static int stm32n6_init(void)
 	LL_PWR_EnableVddIO4();
 	LL_PWR_EnableVddIO5();
 
+	LL_PWR_SetVddIO2VoltageRange(LL_PWR_VDDIO_VOLTAGE_RANGE_1V8);
+	LL_PWR_SetVddIO3VoltageRange(LL_PWR_VDDIO_VOLTAGE_RANGE_1V8);
+
 	return 0;
 }
 
