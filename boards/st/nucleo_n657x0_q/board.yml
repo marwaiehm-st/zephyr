@@ -1,0 +1,5 @@
+board:
+  name: nucleo_n657x0_q
+  vendor: st
+  socs:
+    - name: stm32n657xx

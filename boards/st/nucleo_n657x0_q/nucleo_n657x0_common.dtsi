@@ -1,0 +1,143 @@
+/*
+ * Copyright (c) 2024 STMicroelectronics
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+/dts-v1/;
+#include <st/n6/stm32n657X0.dtsi>
+#include <st/n6/stm32n657x0hxq-pinctrl.dtsi>
+#include "arduino_r3_connector.dtsi"
+#include "st_morpho_connector.dtsi"
+#include <zephyr/dt-bindings/input/input-event-codes.h>
+
+/ {
+	model = "STMicroelectronics STM32N657X0-Q-NUCLEO board";
+	compatible = "st,stm32n657x0-q-nucleo";
+
+	chosen {
+		zephyr,console = &usart1;
+		zephyr,shell-uart = &usart1;
+		zephyr,sram = &axisram1;
+	};
+
+	leds: leds {
+		compatible = "gpio-leds";
+		green_led: led_1 {
+			gpios = <&gpiog 0 GPIO_ACTIVE_HIGH>;
+			label = "User LD6";
+		};
+		blue_led: led_2 {
+			gpios = <&gpiog 8 GPIO_ACTIVE_HIGH>;
+			label = "User LD7";
+		};
+		red_led: led_3 {
+			gpios = <&gpiog 10 GPIO_ACTIVE_HIGH>;
+			label = "User LD5";
+		};
+	};
+
+	gpio_keys {
+		compatible = "gpio-keys";
+		user_button: button_0 {
+			gpios = <&gpioc 13 GPIO_ACTIVE_HIGH>;
+			label = "User SB1";
+			zephyr,code = <INPUT_KEY_0>;
+		};
+	};
+
+	aliases {
+		led0 = &green_led;
+		sw0 = &user_button;
+	};
+};
+
+&clk_hsi {
+	hsi-div = <1>;
+	status = "okay";
+};
+
+&pll1 {
+	clocks = <&clk_hsi>;
+	div-m = <4>;
+	mul-n = <75>;
+	div-p1 = <1>;
+	div-p2 = <1>;
+	status = "okay";
+};
+
+&ic1 {
+	pll-src = <1>;
+	ic-div = <2>;
+	status = "okay";
+};
+
+&ic2 {
+	pll-src = <1>;
+	ic-div = <3>;
+	status = "okay";
+};
+
+&ic6 {
+	pll-src = <1>;
+	ic-div = <2>;
+	status = "okay";
+};
+
+&ic11 {
+	pll-src = <1>;
+	ic-div = <3>;
+	status = "okay";
+};
+
+&perck {
+	clocks = <&rcc STM32_SRC_HSI PER_SEL(0)>;
+	status = "okay";
+};
+
+&cpusw {
+	clocks = <&rcc STM32_SRC_IC1 CPU_SEL(3)>;
+	status = "okay";
+};
+
+&rcc {
+	/* ic2, ic6 & ic11 must all be enabled to set ic2 as SYSCLK */
+	clocks = <&ic2>;
+	clock-frequency = <DT_FREQ_M(400)>;
+	ahb-prescaler = <2>;
+	apb1-prescaler = <1>;
+	apb2-prescaler = <1>;
+	apb4-prescaler = <1>;
+	apb5-prescaler = <1>;
+};
+
+&usart1 {
+	pinctrl-0 = <&usart1_tx_pe5 &usart1_rx_pe6>;
+	pinctrl-names = "default";
+	current-speed = <115200>;
+	status = "okay";
+};
+
+&usart3 {
+	pinctrl-0 = <&usart3_tx_pd8 &usart3_rx_pd9>;
+	pinctrl-names = "default";
+	current-speed = <115200>;
+	status = "okay";
+};
+
+&spi5 {
+	clocks = <&rcc STM32_CLOCK_BUS_APB2 0x00100000>,
+		 <&rcc STM32_SRC_CKPER SPI5_SEL(1)>;
+	pinctrl-0 = <&spi5_nss_pa3 &spi5_sck_pe15 &spi5_miso_pg1 &spi5_mosi_pg2>;
+	pinctrl-names = "default";
+	status = "okay";
+};
+
+&i2c1 {
+	clocks = <&rcc STM32_CLOCK_BUS_APB1 0x00200000>,
+		 <&rcc STM32_SRC_CKPER I2C1_SEL(1)>;
+	pinctrl-0 = <&i2c1_scl_ph9 &i2c1_sda_pc1>;
+	pinctrl-names = "default";
+	clock-frequency = <I2C_BITRATE_STANDARD>;
+	status = "okay";
+};

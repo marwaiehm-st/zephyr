@@ -1,0 +1,10 @@
+# STM32N657X0_Q Nucleo board configuration
+
+# Copyright (c) 2024 STMicroelectronics
+# SPDX-License-Identifier: Apache-2.0
+
+if BOARD_NUCLEO_N657X0_Q
+
+# Nothing for now.
+
+endif # BOARD_NUCLEO_N657X0_Q
