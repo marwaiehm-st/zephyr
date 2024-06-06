@@ -467,6 +467,10 @@ static void stm32_clock_switch_to_hsi(void)
 	LL_RCC_SetSysClkSource(LL_RCC_SYS_CLKSOURCE_HSI);
 	while (LL_RCC_GetSysClkSource() != LL_RCC_SYS_CLKSOURCE_STATUS_HSI) {
 	}
+
+	LL_RCC_SetCpuClkSource(LL_RCC_CPU_CLKSOURCE_HSI);
+	while (LL_RCC_GetCpuClkSource() != LL_RCC_CPU_CLKSOURCE_STATUS_HSI) {
+	}
 }
 
 __unused
@@ -599,6 +603,9 @@ __unused
 static int set_up_plls(void)
 {
 #if defined(STM32_PLL1_ENABLED)
+	/* TODO: Do not switch systematically on HSI if not needed */
+	stm32_clock_switch_to_hsi();
+
 	LL_RCC_PLL1_Disable();
 
 	/* Configure PLL source : Can be HSE, HSI, MSI */
