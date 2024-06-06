@@ -22,6 +22,27 @@
 #define LOG_LEVEL CONFIG_SOC_LOG_LEVEL
 LOG_MODULE_REGISTER(soc);
 
+#if defined(CONFIG_STM32N6_FSBL)
+extern char _vector_start[];
+void *g_pfnVectors = (void *)_vector_start;
+
+#if defined(CONFIG_PLATFORM_SPECIFIC_INIT)
+void z_arm_platform_init(void)
+{
+	/* __disable_irq(); Could be required TBD */
+
+#if defined(CONFIG_STM32N6_FSBL_DEBUG)
+	volatile bool stop = true;
+	while (stop) {
+	};
+#endif
+
+	/* This is provided by STM32Cube HAL */
+	SystemInit();
+}
+#endif
+#endif
+
 /**
  * @brief Perform basic hardware initialization at boot.
  *

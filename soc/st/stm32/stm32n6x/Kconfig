@@ -22,6 +22,11 @@ config STM32N6_FSBL
 	select PLATFORM_SPECIFIC_INIT
 	select TRUSTED_EXECUTION_SECURE
 
+config STM32N6_FSBL_DEBUG
+	bool "FSBL specific debug flag"
+	help
+	  Enable to debug FSBL application
+
 config STM32N6_CUT1
 	bool "Enable Cut1 compatible code"
 	help
