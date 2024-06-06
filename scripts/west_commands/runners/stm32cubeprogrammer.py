@@ -215,15 +215,25 @@ class STM32CubeProgrammerBinaryRunner(ZephyrBinaryRunner):
             self.check_call(cmd + ["--erase", "all"])
 
         # flash image and run application
+        cmd += ["--download"]
+
         if self._use_elf:
             dl_file = self.cfg.elf_file
+            cmd += [dl_file,'--start']
         elif "zephyr_signed" in self.bin_name and os.path.isfile(self.bin_name):
+            flash_addr = self.build_conf['CONFIG_FLASH_LOAD_OFFSET']
+            if flash_addr == 0:
+                raise RuntimeError('No Flash address set')
             dl_file = self.bin_name
+            cmd += [dl_file, f'0x{flash_addr:x}']
         elif self.hex_name is not None and os.path.isfile(self.hex_name):
             # --user-elf not used and no bin file given, default to hex
             dl_file = self.hex_name
+            cmd += [dl_file,'--start']
+
         if dl_file is None:
             raise RuntimeError('cannot flash; no download file was specified')
         elif not os.path.isfile(dl_file):
             raise RuntimeError(f'download file {dl_file} does not exist')
-        self.check_call(cmd + ["--download", dl_file, "--start"])
+
+        self.check_call(cmd)
