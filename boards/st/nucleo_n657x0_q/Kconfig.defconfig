@@ -5,6 +5,7 @@
 
 if BOARD_NUCLEO_N657X0_Q
 
-# Nothing for now.
+config FLASH_LOAD_OFFSET
+	default 0x70000000 if STM32N6_FSBL
 
 endif # BOARD_NUCLEO_N657X0_Q

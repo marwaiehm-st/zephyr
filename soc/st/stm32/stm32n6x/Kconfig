@@ -21,6 +21,7 @@ config STM32N6_FSBL
 	bool "Enable First Stage Boot Loader Mode"
 	select PLATFORM_SPECIFIC_INIT
 	select TRUSTED_EXECUTION_SECURE
+	select HAS_FLASH_LOAD_OFFSET
 
 config STM32N6_FSBL_DEBUG
 	bool "FSBL specific debug flag"
