@@ -19,3 +19,8 @@ config STM32N6_FSBL
 	bool "Enable First Stage Boot Loader Mode"
 	select PLATFORM_SPECIFIC_INIT
 	select TRUSTED_EXECUTION_SECURE
+
+config STM32N6_CUT1
+	bool "Enable Cut1 compatible code"
+	help
+	  Temporary. DNM
