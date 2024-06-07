@@ -13,6 +13,8 @@
 #define BUF_SIZE 64U
 #define BUF_DEF(label) static uint32_t buf_##label[BUF_SIZE]			\
 	Z_GENERIC_SECTION(LINKER_DT_NODE_REGION_NAME(DT_NODELABEL(label)))
+#define BUF_DEF_ALIAS(label) static uint32_t buf_##label[BUF_SIZE]		\
+	Z_GENERIC_SECTION(LINKER_DT_NODE_REGION_NAME(DT_ALIAS(label)))
 
 /**
  * @brief Helper function to test RAM r/w.
@@ -46,6 +48,9 @@ BUF_DEF(sram2);
 #endif
 #if DT_NODE_HAS_STATUS(DT_NODELABEL(memc), okay)
 BUF_DEF(psram);
+#endif
+#if DT_NODE_HAS_STATUS(DT_ALIAS(ext_ram0), okay)
+BUF_DEF_ALIAS(ext_ram0);
 #endif
 
 #if DT_NODE_HAS_STATUS(DT_NODELABEL(ram0), okay)
@@ -104,6 +109,15 @@ ZTEST(test_ram, test_psram)
 {
 #if DT_NODE_HAS_STATUS(DT_NODELABEL(memc), okay)
 	test_ram_rw(buf_psram, BUF_SIZE);
+#else
+	ztest_test_skip();
+#endif
+}
+
+ZTEST(test_ram, test_ext_ram0)
+{
+#if DT_NODE_HAS_STATUS(DT_ALIAS(ext_ram0), okay)
+	test_ram_rw(buf_ext_ram0, BUF_SIZE);
 #else
 	ztest_test_skip();
 #endif
