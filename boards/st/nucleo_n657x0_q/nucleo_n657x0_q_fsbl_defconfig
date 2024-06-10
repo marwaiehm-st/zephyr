@@ -1,0 +1,27 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2024 STMicroelectronics
+
+# enable uart driver
+CONFIG_SERIAL=y
+
+# enable GPIO
+CONFIG_GPIO=y
+
+# Enable clock
+CONFIG_CLOCK_CONTROL=y
+
+# console
+CONFIG_CONSOLE=y
+CONFIG_UART_CONSOLE=y
+
+# enable pin controller
+CONFIG_PINCTRL=y
+
+# For now store the program in RAM during flashing
+CONFIG_XIP=n
+CONFIG_FLASH_SIZE=0
+CONFIG_FLASH_BASE_ADDRESS=0
+
+CONFIG_STM32N6_CUT1=y
+
+CONFIG_STM32N6_FSBL=y
