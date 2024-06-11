@@ -10,6 +10,7 @@
 #include "arduino_r3_connector.dtsi"
 #include "st_morpho_connector.dtsi"
 #include <zephyr/dt-bindings/input/input-event-codes.h>
+#include <zephyr/dt-bindings/flash_controller/xspi.h>
 
 / {
 	model = "STMicroelectronics STM32N657X0-Q-NUCLEO board";
@@ -49,6 +50,7 @@
 	aliases {
 		led0 = &green_led;
 		sw0 = &user_button;
+		spi-flash0 = &mx25um51245g;
 	};
 };
 
@@ -140,4 +142,37 @@
 	pinctrl-names = "default";
 	clock-frequency = <I2C_BITRATE_STANDARD>;
 	status = "okay";
+};
+
+&xspi2 {
+	clocks = <&rcc STM32_CLOCK_BUS_AHB5 0x00001000>,
+		 <&rcc STM32_SRC_CKPER XSPI2_SEL(1)>,
+		 <&rcc STM32_CLOCK_BUS_AHB5 0x00002000>;
+	pinctrl-0 = <&xspim_p2_ncs1_pn1 &xspim_p2_dqs0_pn0 &xspim_p2_clk_pn6
+		     &xspim_p2_io0_pn2 &xspim_p2_io1_pn3 &xspim_p2_io2_pn4
+		     &xspim_p2_io3_pn5 &xspim_p2_io4_pn8 &xspim_p2_io5_pn9
+		     &xspim_p2_io6_pn10 &xspim_p2_io7_pn11>;
+	pinctrl-names = "default";
+	status = "okay";
+
+	mx25um51245g: ospi-nor-flash@70000000 {
+		compatible = "st,stm32-xspi-nor";
+		reg = <0x70000000 DT_SIZE_M(64)>; /* 512 Mbits */
+		ospi-max-frequency = <DT_FREQ_M(200)>;
+		spi-bus-width = <XSPI_OCTO_MODE>;
+		data-rate = <XSPI_DTR_TRANSFER>;
+		four-byte-opcodes;
+		status = "okay";
+
+		partitions {
+			compatible = "fixed-partitions";
+			#address-cells = <1>;
+			#size-cells = <1>;
+
+			storage_partition: partition@a0000 {
+				label = "storage";
+				reg = <0xa0000 DT_SIZE_K(64)>;
+			};
+		};
+	};
 };
