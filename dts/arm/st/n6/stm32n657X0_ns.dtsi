@@ -1,0 +1,13 @@
+/*
+ * Copyright (c) 2024 STMicroelectronics
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+#include <mem.h>
+#include <st/n6/stm32n657_ns.dtsi>
+
+/ {
+	axisram1: memory@34180400 {
+		reg = <0x34180400 DT_SIZE_K(511)>;
+	};
+};
