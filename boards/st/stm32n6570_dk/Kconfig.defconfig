@@ -1,0 +1,11 @@
+# STM32N6570 DK board configuration
+
+# Copyright (c) 2024 STMicroelectronics
+# SPDX-License-Identifier: Apache-2.0
+
+if BOARD_STM32N6570_DK
+
+config FLASH_LOAD_OFFSET
+	default 0x70000000 if STM32N6_FSBL
+
+endif # BOARD_STM32N6570_DK
