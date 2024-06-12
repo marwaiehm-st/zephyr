@@ -9,10 +9,16 @@ else()
     set(SIGNING_TOOL STM32MP_SigningTool_CLI)
 endif()
 
+if(CONFIG_STM32N6_CUT1)
+    set(HEADER_VERSION 2.1)
+else()
+    set(HEADER_VERSION 2.3)
+endif()
+
 set_property(GLOBAL APPEND PROPERTY extra_post_build_commands
   COMMAND ${SIGNING_TOOL}
   -bin ${PROJECT_BINARY_DIR}/${CONFIG_KERNEL_BIN_NAME}.bin
-  -nk -of 0x80000000 -t fsbl -hv 2.1
+  -nk -of 0x80000000 -t fsbl -hv ${HEADER_VERSION}
   -o ${PROJECT_BINARY_DIR}/${CONFIG_KERNEL_BIN_NAME}_signed.bin
   -dump ${PROJECT_BINARY_DIR}/${CONFIG_KERNEL_BIN_NAME}_signed.bin
   WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
