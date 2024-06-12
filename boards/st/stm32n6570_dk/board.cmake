@@ -1,15 +1,21 @@
-board_runner_args(stm32cubeprogrammer "--erase" "--port=swd" "--reset-mode=hw")
-board_runner_args(stm32cubeprogrammer "--port=swd" "--reset-mode=hw")
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2024 STMicroelectronics
 
-board_runner_args(openocd "--tcl-port=6666")
-board_runner_args(openocd --cmd-pre-init "gdb_report_data_abort enable")
-board_runner_args(openocd "--no-halt")
+if(CONFIG_STM32N6_FSBL)
+set_property(GLOBAL APPEND PROPERTY extra_post_build_commands
+  COMMAND STM32MP_SigningTool_CLI
+  -bin ${PROJECT_BINARY_DIR}/${CONFIG_KERNEL_BIN_NAME}.bin
+  -nk -of 0x80000000 -t fsbl -hv 2.1
+  -o ${PROJECT_BINARY_DIR}/${CONFIG_KERNEL_BIN_NAME}_signed.bin
+  -dump ${PROJECT_BINARY_DIR}/${CONFIG_KERNEL_BIN_NAME}_signed.bin
+  WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+)
 
-board_runner_args(pyocd "--target=stm32u575zitx")
+set_property(TARGET runners_yaml_props_target PROPERTY bin_file zephyr_signed.bin)
 
-board_runner_args(jlink "--device=STM32U575ZI" "--reset-after-load")
+board_runner_args(stm32cubeprogrammer "--port=swd")
+board_runner_args(stm32cubeprogrammer "--tool-opt= mode=HOTPLUG ap=1")
+board_runner_args(stm32cubeprogrammer "--extload=MX66UW1G45G_STM32N6570-DK.stldr")
 
 include(${ZEPHYR_BASE}/boards/common/stm32cubeprogrammer.board.cmake)
-include(${ZEPHYR_BASE}/boards/common/openocd.board.cmake)
-include(${ZEPHYR_BASE}/boards/common/pyocd.board.cmake)
-include(${ZEPHYR_BASE}/boards/common/jlink.board.cmake)
+endif()
