@@ -4,4 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+/dts-v1/;
+#include <st/n6/stm32n657x0hxq_ns-pinctrl.dtsi>
+#include <st/n6/stm32n657X0_ns.dtsi>
 #include "nucleo_n657x0_common.dtsi"

@@ -4,9 +4,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-/dts-v1/;
-#include <st/n6/stm32n657X0.dtsi>
-#include <st/n6/stm32n657x0hxq-pinctrl.dtsi>
 #include "arduino_r3_connector.dtsi"
 #include "st_morpho_connector.dtsi"
 #include <zephyr/dt-bindings/input/input-event-codes.h>
