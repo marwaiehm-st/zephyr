@@ -403,3 +403,21 @@ xspi2: xspi@802a000 {
 	#size-cells = <0>;
 	status = "disabled";
 };
+
+sdmmc1: sdmmc@8027000 {
+	compatible = "st,stm32-sdmmc";
+	reg = <0x8027000 0x1000>;
+	clocks = <&rcc STM32_CLOCK_BUS_AHB5 0x00000100>;
+	resets = <&rctl STM32_RESET(AHB5, 8U)>;
+	interrupts = <174 0>;
+	status = "disabled";
+};
+
+sdmmc2: sdmmc@8026800 {
+	compatible = "st,stm32-sdmmc";
+	reg = <0x8026800 0x400>;
+	clocks = <&rcc STM32_CLOCK_BUS_AHB5 0x00000080>;
+	resets = <&rctl STM32_RESET(AHB5, 7U)>;
+	interrupts = <175 0>;
+	status = "disabled";
+};
