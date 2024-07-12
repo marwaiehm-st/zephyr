@@ -17,6 +17,12 @@ CONFIG_UART_CONSOLE=y
 # enable pin controller
 CONFIG_PINCTRL=y
 
+# Enable MPU
+CONFIG_ARM_MPU=y
+
+# Enable HW stack protection
+CONFIG_HW_STACK_PROTECTION=y
+
 # For now store the program in RAM during flashing
 CONFIG_XIP=n
 CONFIG_FLASH_SIZE=0
