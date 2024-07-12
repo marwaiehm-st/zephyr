@@ -11,6 +11,7 @@
 
 static const struct arm_mpu_region mpu_regions[] = {
 	/* Region 0 */
+#if (CONFIG_FLASH_SIZE != 0)
 	MPU_REGION_ENTRY("FLASH_0",
 			 CONFIG_FLASH_BASE_ADDRESS,
 #if defined(CONFIG_ARMV8_M_BASELINE) || defined(CONFIG_ARMV8_M_MAINLINE)
@@ -18,6 +19,7 @@ static const struct arm_mpu_region mpu_regions[] = {
 				 CONFIG_FLASH_SIZE * 1024)),
 #else
 			 REGION_FLASH_ATTR(REGION_FLASH_SIZE)),
+#endif
 #endif
 	/* Region 1 */
 	MPU_REGION_ENTRY("SRAM_0",
