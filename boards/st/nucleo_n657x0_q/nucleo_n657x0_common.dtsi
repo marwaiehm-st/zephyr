@@ -16,7 +16,7 @@
 	chosen {
 		zephyr,console = &usart1;
 		zephyr,shell-uart = &usart1;
-		zephyr,sram = &axisram1;
+		zephyr,sram = &axisram2;
 	};
 
 	leds: leds {
