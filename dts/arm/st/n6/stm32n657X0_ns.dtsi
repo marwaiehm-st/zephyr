@@ -7,7 +7,11 @@
 #include <st/n6/stm32n657_ns.dtsi>
 
 / {
-	axisram1: memory@34180400 {
+	axisram1: memory@34000000 {
+		reg = <0x34000000 DT_SIZE_K(624)>;
+	};
+
+	axisram2: memory@34180400 {
 		reg = <0x34180400 DT_SIZE_K(511)>;
 	};
 };
