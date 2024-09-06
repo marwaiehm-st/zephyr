@@ -8,9 +8,13 @@
 #include <zephyr/dt-bindings/clock/stm32n6_clock.h>
 #include <zephyr/dt-bindings/reset/stm32n6_reset.h>
 #include <zephyr/dt-bindings/memory-controller/stm32-fmc-nor-psram.h>
+#include <zephyr/dt-bindings/dma/stm32_dma.h>
 #include <zephyr/dt-bindings/gpio/gpio.h>
 #include <zephyr/dt-bindings/i2c/i2c.h>
+#include <zephyr/dt-bindings/memory-attr/memory-attr.h>
+#include <zephyr/dt-bindings/memory-attr/memory-attr-arm.h>
 #include <freq.h>
+#include <mem.h>
 
 / {
 	cpus {
@@ -32,11 +36,13 @@
 	};
 
 	axisram1: memory@34000000 {
-		compatible = "mmio-sram";
+		compatible = "zephyr,memory-region", "mmio-sram";
+		zephyr,memory-region = "AXISRAM1";
 	};
 
 	axisram2: memory@34180400 {
-		compatible = "mmio-sram";
+		compatible = "zephyr,memory-region", "mmio-sram";
+		zephyr,memory-region = "AXISRAM2";
 	};
 
 	clocks {
