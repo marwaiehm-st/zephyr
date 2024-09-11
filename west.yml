@@ -236,7 +236,7 @@ manifest:
       groups:
         - hal
     - name: hal_stm32
-      revision: refs/heads/stm32n6_cube_0_4_1_zephyr_3_7_0
+      revision: refs/heads/dev/stm32n6
       remote: stm32-osf
       path: modules/hal/stm32
       groups:
