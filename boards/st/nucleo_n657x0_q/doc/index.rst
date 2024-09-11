@@ -31,6 +31,40 @@ Chip version
 
 If the chip in use is one of 1.0 or 1.1, make sure kconfig:option:`CONFIG_STM32N6_CUT1`.
 
+Supported Features
+==================
+
+The Zephyr nucleo_n657x0_q board configuration supports the following hardware features:
+
++-----------+------------+-------------------------------------+
+| Interface | Controller | Driver/Component                    |
++===========+============+=====================================+
+| NVIC      | on-chip    | nested vector interrupt controller  |
++-----------+------------+-------------------------------------+
+| UART      | on-chip    | serial port-polling;                |
+|           |            | serial port-interrupt               |
++-----------+------------+-------------------------------------+
+| PINMUX    | on-chip    | pinmux                              |
++-----------+------------+-------------------------------------+
+| GPIO      | on-chip    | gpio                                |
++-----------+------------+-------------------------------------+
+| I2C       | on-chip    | i2c                                 |
++-----------+------------+-------------------------------------+
+| SPI       | on-chip    | spi                                 |
++-----------+------------+-------------------------------------+
+| DMA*      | on-chip    | dma                                 |
++-----------+------------+-------------------------------------+
+| XSPI      | on-chip    | xspi                                |
++-----------+------------+-------------------------------------+
+
+\*Please note that DMA is only supported on FSBL target due to secure execution limitation
+
+Other hardware features are not yet supported on this Zephyr port.
+
+The default configuration can be found in the defconfig file:
+:zephyr_file:`boards/st/nucleo_n657x0_q/nucleo_n657x0_q_defconfig`
+:zephyr_file:`boards/st/nucleo_n657x0_q/nucleo_n657x0_q_fsbl_defconfig`
+
 Programming and Debugging
 *************************
 
