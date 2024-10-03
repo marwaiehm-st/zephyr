@@ -4,13 +4,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-/* loopback with arduino header D0 and D1 */
+/* loopback with arduino header D3 and D4 */
 
 / {
 	resources {
 		compatible = "test-gpio-basic-api";
 		status = "okay";
-		out-gpios = <&arduino_header 6 (GPIO_ACTIVE_HIGH | GPIO_PUSH_PULL | GPIO_PULL_UP)>;
-		in-gpios = <&arduino_header 7 (GPIO_ACTIVE_HIGH | GPIO_PUSH_PULL | GPIO_PULL_UP)>;
+		out-gpios = <&arduino_header 9 (GPIO_ACTIVE_HIGH | GPIO_PUSH_PULL | GPIO_PULL_UP)>;
+		in-gpios = <&arduino_header 10 (GPIO_ACTIVE_HIGH | GPIO_PUSH_PULL | GPIO_PULL_UP)>;
 	};
 };
