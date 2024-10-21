@@ -8,6 +8,7 @@ toolchain:
 supported:
   - gpio
   - usart
+  - usb_device
 ram: 1024
 flash: 0
 vendor: st

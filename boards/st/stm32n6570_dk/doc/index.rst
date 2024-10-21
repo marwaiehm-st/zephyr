@@ -59,6 +59,8 @@ The Zephyr stm32n6570_dk board configuration supports the following hardware fea
 +-----------+------------+-------------------------------------+
 | SDMMC     | on-chip    | flash memory                        |
 +-----------+------------+-------------------------------------+
+| USB       | on-chip    | USB High Speed device               |
++-----------+------------+-------------------------------------+
 
 \*Please note that DMA is only supported on FSBL target due to secure execution limitation
 

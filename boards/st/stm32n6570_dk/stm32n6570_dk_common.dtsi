@@ -42,6 +42,12 @@
 
 };
 
+&clk_hse {
+	hse-div2;
+	clock-frequency = <DT_FREQ_M(48)>;
+	status = "okay";
+};
+
 &clk_hsi {
 	hsi-div = <1>;
 	status = "okay";
@@ -232,4 +238,8 @@
 	bus-width = <4>;
 	cd-gpios = <&gpion 8 GPIO_ACTIVE_HIGH>;
 	pwr-gpios = <&gpioq 7 GPIO_ACTIVE_HIGH>;
+};
+
+zephyr_udc0: &usbotg_hs1 {
+	status = "okay";
 };
