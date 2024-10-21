@@ -56,6 +56,8 @@ The Zephyr nucleo_n657x0_q board configuration supports the following hardware f
 +-----------+------------+-------------------------------------+
 | XSPI      | on-chip    | xspi                                |
 +-----------+------------+-------------------------------------+
+| USB       | on-chip    | USB High Speed device               |
++-----------+------------+-------------------------------------+
 
 \*Please note that DMA is only supported on FSBL target due to secure execution limitation
 

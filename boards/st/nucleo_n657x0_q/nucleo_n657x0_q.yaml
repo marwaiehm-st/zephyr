@@ -13,4 +13,5 @@ supported:
   - uart
   - gpio
   - i2c
+  - usb_device
 vendor: st
