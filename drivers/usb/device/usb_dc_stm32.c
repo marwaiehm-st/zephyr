@@ -881,8 +881,12 @@ int usb_dc_ep_write(const uint8_t ep, const uint8_t *const data,
 		len = USB_MAX_CTRL_MPS;
 	}
 
+	/* Copy data to a transmit buffer */
+	uint8_t transmit_buffer[USB_MAX_CTRL_MPS];
+	memcpy(transmit_buffer, data, len);
+
 	status = HAL_PCD_EP_Transmit(&usb_dc_stm32_state.pcd, ep,
-				     (void *)data, len);
+				     (void *)transmit_buffer, len);
 	if (status != HAL_OK) {
 		LOG_ERR("HAL_PCD_EP_Transmit failed(0x%02x), %d", ep,
 			(int)status);
@@ -904,6 +908,9 @@ int usb_dc_ep_write(const uint8_t ep, const uint8_t *const data,
 	if (!ret && ret_bytes) {
 		*ret_bytes = len;
 	}
+
+	/* Release the semaphore */
+	k_sem_give(&ep_state->write_sem);
 
 	return ret;
 }
