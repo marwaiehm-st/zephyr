@@ -101,6 +101,10 @@ static const struct device *eth_stm32_phy_dev = DEVICE_PHY_BY_NAME(0);
 #elif defined(CONFIG_SOC_SERIES_STM32H7X)
 #define __eth_stm32_desc __attribute__((section(".eth_stm32_desc")))
 #define __eth_stm32_buf  __attribute__((section(".eth_stm32_buf")))
+#elif DT_HAS_COMPAT_STATUS_OKAY(st_stm32n6_ethernet)
+#define __eth_stm32_rx_desc __attribute__((section(".RxDecripSection"), aligned(32)))
+#define __eth_stm32_tx_desc __attribute__((section(".TxDecripSection"), aligned(32)))
+#define __eth_stm32_buf  __attribute__((section(".eth_stm32_buf"), aligned(32)))
 #elif defined(CONFIG_NOCACHE_MEMORY)
 #define __eth_stm32_desc __nocache __aligned(4)
 #define __eth_stm32_buf  __nocache __aligned(4)
@@ -110,8 +114,8 @@ static const struct device *eth_stm32_phy_dev = DEVICE_PHY_BY_NAME(0);
 #endif
 
 #if DT_HAS_COMPAT_STATUS_OKAY(st_stm32n6_ethernet)
-static ETH_DMADescTypeDef dma_rx_desc_tab[ETH_DMA_RX_CH_CNT][ETH_RXBUFNB] __eth_stm32_desc;
-static ETH_DMADescTypeDef dma_tx_desc_tab[ETH_DMA_TX_CH_CNT][ETH_TXBUFNB] __eth_stm32_desc;
+static ETH_DMADescTypeDef dma_rx_desc_tab[ETH_DMA_RX_CH_CNT][ETH_RXBUFNB] __eth_stm32_rx_desc;
+static ETH_DMADescTypeDef dma_tx_desc_tab[ETH_DMA_TX_CH_CNT][ETH_TXBUFNB] __eth_stm32_tx_desc;
 #else
 static ETH_DMADescTypeDef dma_rx_desc_tab[ETH_RXBUFNB] __eth_stm32_desc;
 static ETH_DMADescTypeDef dma_tx_desc_tab[ETH_TXBUFNB] __eth_stm32_desc;
@@ -428,14 +432,6 @@ static int eth_tx(const struct device *dev, struct net_pkt *pkt)
 
 	/* Reset TX complete interrupt semaphore before TX request*/
 	k_sem_reset(&dev_data->tx_int_sem);
-
-	/**
-	 * Assure cache coherency before DMA read operation.
-	 * Clean the data cache for the memory region specified by tx_config.TxBuffer->buffer
-	 * and tx_config.TxBuffer->len to ensure that any modified data in the cache is written
-	 * back to the main memory before the DMA controller reads it.
-	 */
-	sys_cache_data_flush_range((void *)(tx_config.TxBuffer->buffer), tx_config.TxBuffer->len);
 
 	/* tx_buffer is allocated on function stack, we need */
 	/* to wait for the transfer to complete */
@@ -1085,8 +1081,13 @@ static int eth_initialize(const struct device *dev)
 	HAL_ETH_GetMACConfig(heth, &mac_config);
 	mac_config.DuplexMode = IS_ENABLED(CONFIG_ETH_STM32_MODE_HALFDUPLEX) ?
 				      ETH_HALFDUPLEX_MODE : ETH_FULLDUPLEX_MODE;
-	mac_config.Speed = IS_ENABLED(CONFIG_ETH_STM32_SPEED_10M) ?
-				 ETH_SPEED_10M : ETH_SPEED_100M;
+#if DT_HAS_COMPAT_STATUS_OKAY(st_stm32n6_ethernet)
+        mac_config.Speed = IS_ENABLED(CONFIG_ETH_STM32_SPEED_1000M) ? ETH_SPEED_1000M :
+                           (IS_ENABLED(CONFIG_ETH_STM32_SPEED_10M) ? ETH_SPEED_10M : ETH_SPEED_100M);
+#else
+        mac_config.Speed = IS_ENABLED(CONFIG_ETH_STM32_SPEED_10M) ? ETH_SPEED_10M : ETH_SPEED_100M;
+#endif
+
 	hal_ret = HAL_ETH_SetMACConfig(heth, &mac_config);
 	if (hal_ret != HAL_OK) {
 		LOG_ERR("HAL_ETH_SetMACConfig: failed: %d", hal_ret);
@@ -1394,7 +1395,7 @@ static struct eth_stm32_hal_dev_data eth0_data = {
 			.MediaInterface = IS_ENABLED(CONFIG_ETH_STM32_HAL_MII) ?
 					  ETH_MEDIA_INTERFACE_MII :
 #if DT_HAS_COMPAT_STATUS_OKAY(st_stm32n6_ethernet)
-					  IS_ENABLED(CONFIG_ETH_STM32_HAL_GRMII) ?
+					  IS_ENABLED(CONFIG_ETH_STM32_HAL_RGMII) ?
 					  ETH_MEDIA_INTERFACE_RGMII :
 #endif
 					  ETH_MEDIA_INTERFACE_RMII,
