@@ -1,0 +1,16 @@
+# Copyright The Zephyr Project Contributors
+# SPDX-License-Identifier: Apache-2.0
+
+description: ST STM32 Ethernet parent node
+
+compatible: "st,stm32-ethernet-parent"
+
+include: base.yaml
+
+properties:
+  reg:
+    required: true
+  clocks:
+    required: true
+  clock-names:
+    required: true
