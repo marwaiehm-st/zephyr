@@ -2,8 +2,18 @@ sample:
   name: DHCP Client
 tests:
   sample.net.dhcpv4_client:
-    harness: net
-    depends_on: netif
+    harness: console
+    harness_config:
+      type: multi_line
+      regex:
+        - "phy_mii: PHY (0) Link speed"
+    platform_allow:
+      - nucleo_h563zi
+      - nucleo_h743zi
+      - nucleo_f429zi
+      - nucleo_f746zg
+      - stm32h573i_dk
+      - nucleo_f207zg
     tags:
       - net
       - http
