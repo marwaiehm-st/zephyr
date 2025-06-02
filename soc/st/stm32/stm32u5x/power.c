@@ -80,6 +80,7 @@ void set_mode_stop(uint8_t substate_id)
 void set_mode_standby(uint8_t substate_id)
 {
 	ARG_UNUSED(substate_id);
+	LL_PWR_ClearFlag_WU();
 	/* Select standby mode */
 	LL_PWR_SetPowerMode(LL_PWR_STANDBY_MODE);
 }

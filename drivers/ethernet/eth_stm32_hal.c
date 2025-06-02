@@ -12,6 +12,7 @@
 
 #include <zephyr/logging/log.h>
 LOG_MODULE_REGISTER(LOG_MODULE_NAME);
+#include <zephyr/cache.h>
 
 #include <zephyr/kernel.h>
 #include <zephyr/device.h>
@@ -102,6 +103,8 @@ static const struct device *eth_stm32_phy_dev = DEVICE_DT_GET(DT_INST_PHANDLE(0,
 
 #define ETH_DMA_TX_TIMEOUT_MS	20U  /* transmit timeout in milliseconds */
 
+
+
 #if defined(CONFIG_ETH_STM32_HAL_USE_DTCM_FOR_DMA_BUFFER) && \
 	    DT_NODE_HAS_STATUS_OKAY(DT_CHOSEN(zephyr_dtcm))
 #define __eth_stm32_desc __dtcm_noinit_section
@@ -117,15 +120,33 @@ static const struct device *eth_stm32_phy_dev = DEVICE_DT_GET(DT_INST_PHANDLE(0,
 #define __eth_stm32_buf  __aligned(4)
 #endif
 
+
+
+
+
 #if DT_HAS_COMPAT_STATUS_OKAY(st_stm32n6_ethernet)
+
+#define __eth_stm32_desc_rx __attribute__((section(".eth_stm32_desc_rx")))
+#define __eth_stm32_desc_tx __attribute__((section(".eth_stm32_desc_tx")))
+#define __eth_stm32_buf  __attribute__((section(".eth_stm32_buf")))
+
+__ALIGN_BEGIN ETH_DMADescTypeDef  __nocache
+dma_rx_desc_tab[ETH_DMA_RX_CH_CNT][ETH_RXBUFNB] __ALIGN_END;
+__ALIGN_BEGIN ETH_DMADescTypeDef  __nocache
+dma_tx_desc_tab[ETH_DMA_TX_CH_CNT][ETH_TXBUFNB] __ALIGN_END;
+/*static ETH_DMADescTypeDef
+	dma_rx_desc_tab[ETH_DMA_RX_CH_CNT][ETH_RXBUFNB] ALIGN_32BYTES(__eth_stm32_desc_rx);
 static ETH_DMADescTypeDef
-	dma_rx_desc_tab[ETH_DMA_RX_CH_CNT][ETH_RXBUFNB] ALIGN_32BYTES(__eth_stm32_desc);
-static ETH_DMADescTypeDef
-	dma_tx_desc_tab[ETH_DMA_TX_CH_CNT][ETH_TXBUFNB] ALIGN_32BYTES(__eth_stm32_desc);
+	dma_tx_desc_tab[ETH_DMA_TX_CH_CNT][ETH_TXBUFNB] ALIGN_32BYTES(__eth_stm32_desc_tx);*/
 #else
 static ETH_DMADescTypeDef dma_rx_desc_tab[ETH_RXBUFNB] __eth_stm32_desc;
 static ETH_DMADescTypeDef dma_tx_desc_tab[ETH_TXBUFNB] __eth_stm32_desc;
 #endif
+
+/*__ALIGN_BEGIN uint8_t __nocache
+dma_rx_buffer[ETH_RXBUFNB][ETH_STM32_RX_BUF_SIZE] __ALIGN_END;
+__ALIGN_BEGIN uint8_t __nocache
+dma_tx_buffer[ETH_TXBUFNB][ETH_STM32_TX_BUF_SIZE] __ALIGN_END;*/
 
 static uint8_t dma_rx_buffer[ETH_RXBUFNB][ETH_STM32_RX_BUF_SIZE] __eth_stm32_buf;
 static uint8_t dma_tx_buffer[ETH_TXBUFNB][ETH_STM32_TX_BUF_SIZE] __eth_stm32_buf;
@@ -162,6 +183,7 @@ void HAL_ETH_RxAllocateCallback(uint8_t **buf)
 			dma_rx_buffer_header[i].next = NULL;
 			dma_rx_buffer_header[i].size = 0;
 			dma_rx_buffer_header[i].used = true;
+			//SCB_InvalidateDCache_by_Addr(dma_rx_buffer[i],ETH_STM32_RX_BUF_SIZE);
 			*buf = dma_rx_buffer[i];
 			return;
 		}
@@ -412,10 +434,16 @@ static int eth_tx(const struct device *dev, struct net_pkt *pkt)
 
 	/* Reset TX complete interrupt semaphore before TX request*/
 	k_sem_reset(&dev_data->tx_int_sem);
-
+	//sys_cache_data_flush_range((uint32_t*)(tx_config.TxBuffer->buffer), tx_config.TxBuffer->len);
 	/* tx_buffer is allocated on function stack, we need */
 	/* to wait for the transfer to complete */
 	/* So it is not freed before the interrupt happens */
+ // Dump des données avant la transmission
+    printf("TX Data: ");
+    for (uint16_t i = 0; i < tx_config.TxBuffer->len; i++) {
+        printf("%02X ", tx_config.TxBuffer->buffer[i]);
+    }
+    printf("\n");
 	hal_ret = HAL_ETH_Transmit_IT(heth, &tx_config);
 
 	if (hal_ret != HAL_OK) {
@@ -789,7 +817,16 @@ void HAL_ETH_RxCpltCallback(ETH_HandleTypeDef *heth_handle)
 		CONTAINER_OF(heth_handle, struct eth_stm32_hal_dev_data, heth);
 
 	__ASSERT_NO_MSG(dev_data != NULL);
+    // Supposons que 'current_rx_buffer' est l'index du buffer actuellement utilisé
+    uint8_t *rx_data = dma_rx_buffer[0];
+    uint16_t length = ETH_STM32_RX_BUF_SIZE; // Longueur des données reçues
 
+    // Dump des données reçues
+    printf("RX Data: ");
+    for (uint16_t i = 0; i < length; i++) {
+        printf("%02X ", rx_data[i]);
+    }
+    printf("\n");
 	k_sem_give(&dev_data->rx_int_sem);
 }
 
@@ -861,7 +898,21 @@ static int eth_initialize(const struct device *dev)
 	/* RISAF Configuration */
 	RISAF_Config();
 #endif
+#if DT_HAS_COMPAT_STATUS_OKAY(st_stm32n6_ethernet)
 
+	/* eth descriptors in AXISRAM4 */
+	{
+	/* SRAM4 memory clock enable */
+	LL_MEM_EnableClock(LL_MEM_AXISRAM4);
+
+	/* Power On AXISRAM4 */
+	{
+	RAMCFG_HandleTypeDef hramcfg  = {0};
+	hramcfg.Instance = RAMCFG_SRAM1_AXI;
+	HAL_RAMCFG_EnableAXISRAM(&hramcfg);
+	}
+	}
+#endif
 	/* enable clock */
 	ret = clock_control_on(DEVICE_DT_GET(STM32_CLOCK_CONTROL_NODE),
 		(clock_control_subsys_t)&cfg->pclken);

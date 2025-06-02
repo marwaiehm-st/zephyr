@@ -1364,7 +1364,7 @@ static int shell_cmd_upload2(const struct shell *sh, size_t argc,
 		if (net_ipv4_is_addr_unspecified(&in4_addr_dst.sin_addr)) {
 			shell_fprintf(sh, SHELL_WARNING,
 				      "Invalid destination IPv4 address.\n");
-			return -ENOEXEC;
+			//return -ENOEXEC;
 		}
 
 		shell_fprintf(sh, SHELL_NORMAL,

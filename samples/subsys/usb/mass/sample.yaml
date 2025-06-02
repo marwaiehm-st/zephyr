@@ -31,6 +31,7 @@ tests:
       - mimxrt685_evk/mimxrt685s/cm33
       - mimxrt1060_evk/mimxrt1062/qspi
       - max32690evkit/max32690/m4
+      - b_u585i_iot02a
     extra_args:
       - CONF_FILE="usbd_next_prj.conf"
       - EXTRA_DTC_OVERLAY_FILE="ramdisk.overlay"
