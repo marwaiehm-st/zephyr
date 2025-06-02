@@ -5,7 +5,6 @@ tests:
     depends_on: usb_device
     tags: usb
     arch_exclude: posix
-    harness: console
   sample.usb_device_next.cdc-acm:
     depends_on: usbd
     tags: usb
