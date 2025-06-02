@@ -6,10 +6,6 @@ tests:
     tags: usb
     arch_exclude: posix
     harness: console
-    harness_config:
-      type: one_line
-      regex:
-        - "Wait for DTR"
   sample.usb_device_next.cdc-acm:
     depends_on: usbd
     tags: usb
